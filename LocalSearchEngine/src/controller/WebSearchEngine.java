@@ -1,9 +1,9 @@
 package controller;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,52 +21,28 @@ import services.HTMLTextConverter;
 
 public class WebSearchEngine {
 
-
 	static ArrayList<String> key = new ArrayList<String>();
 	static Hashtable<String, Integer> numbers = new Hashtable<String, Integer>();
 	static Scanner sc = new Scanner(System.in);
 
-	public WebSearchEngine()
-	{
-		try {
-			HTMLTextConverter.convertHtmlToText();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("FileNotFoundException");
-			//e.printStackTrace();
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			System.out.println("NullPointerException");
-			//e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("IOException");
-			//e.printStackTrace();
-		}
-	}
-
 	private static Map<File, Integer> searchWord(File filePath, String word,Map<File, Integer> occurrence) {
-		//ArrayList<Integer> counter = new ArrayList<>();
-		int count=0, offset1a = 0;
+		int cnt=0, lastLoc = 0;
 
 		String txt = HTMLTextConverter.fileCreator(filePath);
 
-		for (int loc = 0; loc <= txt.length(); loc += offset1a + word.length()) {
-			offset1a = search1(word, txt.substring(loc));
-			if ((offset1a + loc) < txt.length()) {
-				count++;
-				//System.out.println(word + " at position " + (offset1a + loc));   //printing position of word
+		for (int loc = 0; loc <= txt.length(); loc += lastLoc + word.length()) {
+			lastLoc = search1(word, txt.substring(loc));
+			if ((lastLoc + loc) < txt.length()) {
+				cnt++;
 			}
 		}
-		if(count!=0)	{
-			occurrence.putIfAbsent(filePath, count);
-			//System.out.println("\nFound in "+filePath.getName());	
-
+		if(cnt!=0)	{
+			occurrence.putIfAbsent(filePath, cnt);
 		}
 		return occurrence;
 	}
 
-	// Brute force method : Just matches and returns the offset
+	// Brute force method : Just matches and returns the offset.
 	public static int search1(String pat, String txt) {
 		int M = pat.length();
 		int N = txt.length();
@@ -78,9 +54,9 @@ public class WebSearchEngine {
 					break;
 			}
 			if (j == M)
-				return i; // found at offset i
+				return i; // found at offset i.
 		}
-		return N; // not found
+		return N; // not found.
 	}
 
 	/*using regex to find similar string to pattern */
@@ -92,45 +68,37 @@ public class WebSearchEngine {
 			String pattern3 = "[a-zA-Z0-9]+";
 
 
-			// Create a Pattern object
+			// Create a Pattern object.
 			Pattern r3 = Pattern.compile(pattern3);
 			// Now create matcher object.
 			Matcher m3 = r3.matcher(line);
 			int _fileNumber=0;
-			try {
-				File _directory = new File("G:\\study\\0MAC\\Adv_Computing_Concepts\\LocalSearchEngine\\src\\ConvertedTextFiles\\");
-				File[] _fileArray = _directory.listFiles();
-				for(int i=0;i<100;i++)
-				{
-					findData(_fileArray[i],_fileNumber,m3,p1);
-					_fileNumber++;
-				}
-
-				Set<?> keys = new HashSet<Object>();
-				Integer value =1;
-				Integer val = 0;
-
-				System.out.print(">>Did you mean?\n>>");
-				for(Map.Entry entry: numbers.entrySet()){
-					if(val == entry.getValue()) {
-						break;
-					}
-					else {
-						if(value==entry.getValue()){
-							System.out.print(entry.getKey()+"  ");
-						}
-					}
-				}
-			} catch (Exception e) {
-				System.out.println(">>Exception:"+e);
-			}
-			finally
+			File _directory = new File(System.getProperty("user.dir")+"\\src\\ConvertedTextFiles\\");
+			File[] _fileArray = _directory.listFiles();
+			for(int i=0;i<100;i++)
 			{
+				findData(_fileArray[i],_fileNumber,m3,p1);
+				_fileNumber++;
+			}
 
+			Set<?> keys = new HashSet<Object>();
+			Integer value =1;
+			Integer val = 0;
+
+			System.out.print(">>Did you mean?\n>>");
+			for(Map.Entry entry: numbers.entrySet()){
+				if(val == entry.getValue()) {
+					break;
+				}
+				else {
+					if(value==entry.getValue()){
+						System.out.print(entry.getKey()+"  ");
+					}
+				}
 			}
 		}
 		catch(Exception e){
-			System.out.println(">>Exception: "+e);
+			System.out.println(">>Exception on alternativeWord: "+e);
 		}
 	}
 
@@ -139,7 +107,6 @@ public class WebSearchEngine {
 	{
 		try
 		{
-			int i = 0;
 			BufferedReader _rederObject = new BufferedReader(new FileReader(_sourceFile));
 			String line = null;
 
@@ -156,7 +123,7 @@ public class WebSearchEngine {
 		}     
 		catch(Exception e)
 		{
-			System.out.println(">>Exception:"+e);
+			System.out.println(">>Exception on findData:"+e);
 		}
 	}
 
@@ -201,15 +168,13 @@ public class WebSearchEngine {
 	}
 
 	private static void checkData(File[] fileNames,String pat) {
-		int times=0, pages=0;
+		int pages=0;
 
 		Map<File,Integer> occurrence = new HashMap<File,Integer>();
 
 		System.out.println(">>Searching in web...");
 		for(File f: fileNames)
 		{
-			//times=searchWord(f, pat);
-			//occurrence.put(f.getName(), times);
 			occurrence = searchWord(f, pat, occurrence);
 			if(occurrence.containsKey(f)) 
 				pages++;
@@ -230,27 +195,33 @@ public class WebSearchEngine {
 		LinkedList<Entry<File, Integer>> occur = new LinkedList<Entry<File, Integer>>(occurence.entrySet());	
 		occurence = OtherFunctions.sortCall(occur);
 		System.out.println(">>...Page Ranking...");
-		
-		occurence.forEach((file, occ) -> System.out.println(file.getName() + ":" + occ));
+
+		occurence.forEach((file, occ) -> System.out.println(">>"+file.getName().substring(0,file.getName().length()-4) + ".htm: " + occ));
 
 	}
-	
+
 	public static void main(String[] args) {
 
 		Scanner s = new Scanner (System.in);
-		
+		String projectDir = System.getProperty("user.dir");
 		try {
-			HTMLTextConverter.convertHtmlToText();
-			
-			File dir = new File("G:\\study\\0MAC\\Adv_Computing_Concepts\\LocalSearchEngine\\src\\ConvertedTextFiles\\");
-			
+			File dir = new File(projectDir+"\\src\\ConvertedTextFiles\\");
+			if(dir.listFiles().length==0)
+				HTMLTextConverter.convertHtmlToText(projectDir);
+		
 			File[] fileArray = dir.listFiles();
-			
-			System.out.print(">>Enter your search:\n>>");
+			System.out.print(">>Welcome to Tyrion Search\n>>Made by: Team Tyrion\n>>Team Members:"
+					+ "\n\t Karanveer Singh"
+					+ "\n\t Parminder Singh"
+					+ "\n\t Sanyam Sareen"
+					+ "\n\t Saharsh Bawankar");
+
+			System.out.print("\n>>Enter your search:\n>>");
+
 			checkData(fileArray,s.nextLine());
 		}
 		catch (Exception e) {
-			System.out.println(">>Exception:"+e);
+			System.out.println(">>Exception on maindata:"+e);
 		}
 		s.close();
 	}

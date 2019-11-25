@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="G:/study/0MAC/Adv_Computing_Concepts_Resources/GroupProject-1/SearchEngine/jsoup-1.8.1.jar"/>
-	<classpathentry kind="lib" path="G:/study/0MAC/Adv_Computing_Concepts_Resources/GroupProject-1/SearchEngine/jsoup-1.8.1-javadoc.jar"/>
-	<classpathentry kind="lib" path="G:/study/0MAC/Adv_Computing_Concepts_Resources/GroupProject-1/SearchEngine/jsoup-1.8.1-sources.jar"/>
+	<classpathentry kind="lib" path="G:/study/git/LocalSearchEngine/LocalSearchEngine/src/controller/jsoup-1.8.1.jar"/>
+	<classpathentry kind="lib" path="G:/study/git/LocalSearchEngine/LocalSearchEngine/src/controller/jsoup-1.8.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="G:/study/git/LocalSearchEngine/LocalSearchEngine/src/controller/jsoup-1.8.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
